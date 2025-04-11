@@ -1,7 +1,15 @@
-import 'package:bookia_store/features/splash_screen.dart';
+import 'package:bookia_store/core/constants/themes.dart';
+import 'package:bookia_store/core/cubit/auth_cubit.dart';
+import 'package:bookia_store/core/services/dio_provider.dart';
+import 'package:bookia_store/core/pages/splash_screen.dart';
+import 'package:bookia_store/core/services/shared_preferences.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await DioProvider.init();
+  await AppLocalStorage.init();
   runApp(MyApp());
 }
 
@@ -10,10 +18,16 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(fontFamily: "DmSerifDisplay"),
-      debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+    return BlocProvider(
+      create: (BuildContext context) {
+        return AuthCubit();
+      },
+      child: MaterialApp(
+        theme: AppTheme.appTheme(),
+        debugShowCheckedModeBanner: false,
+
+        home: SplashScreen(),
+      ),
     );
   }
 }

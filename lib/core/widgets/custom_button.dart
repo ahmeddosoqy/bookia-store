@@ -1,5 +1,5 @@
-import 'package:bookia_store/core/app_colors.dart';
-import 'package:bookia_store/core/text_style.dart';
+import 'package:bookia_store/core/constants/app_colors.dart';
+import 'package:bookia_store/core/constants/text_style.dart';
 import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
@@ -8,20 +8,22 @@ class CustomButton extends StatelessWidget {
     required this.text,
     required this.onPressed,
     this.width,
+    this.height,
   });
   final String text;
   final Function() onPressed;
   final double? width;
+  final double? height;
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 60,
-      width: width ?? 320,
+      height: height ?? 50,
+      width: width ?? double.infinity,
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15),
+            borderRadius: BorderRadius.circular(10),
           ),
           backgroundColor: AppColors.primaryColor,
         ),
@@ -30,7 +32,7 @@ class CustomButton extends StatelessWidget {
           style: getTitleStyle(
             context,
             color: AppColors.whiteColor,
-            fontSize: 20,
+            fontSize: 16,
           ),
         ),
       ),

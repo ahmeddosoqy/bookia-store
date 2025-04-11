@@ -1,5 +1,10 @@
+import 'dart:developer';
+
 import 'package:bookia_store/core/constants/asset_manager.dart';
-import 'package:bookia_store/welcome_page.dart';
+import 'package:bookia_store/core/extentions/extentions.dart';
+import 'package:bookia_store/core/pages/main_app_screen.dart';
+import 'package:bookia_store/core/pages/welcome_page.dart';
+import 'package:bookia_store/core/services/shared_preferences.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 
@@ -14,8 +19,14 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
+    String? token = AppLocalStorage.getCachedData(AppLocalStorage.tokenKey);
+    log(token.toString());
     Future.delayed(Duration(seconds: 3), () {
-      context.pushReplacement(WelcomePage());
+      if (token != null) {
+        context.pushReplacement(MainAppScreen());
+      } else {
+        context.pushReplacement(WelcomePage());
+      }
     });
   }
 
@@ -28,19 +39,6 @@ class _SplashScreenState extends State<SplashScreen> {
           children: [Lottie.asset(AssetManager.splashscreen)],
         )),
       ),
-    );
-  }
-}
-
-extension Navigation on BuildContext {
-  pushTo(Widget widget) {
-    Navigator.push(this, MaterialPageRoute(builder: (context) => widget));
-  }
-
-  pushReplacement(Widget widget) {
-    Navigator.pushReplacement(
-      this,
-      MaterialPageRoute(builder: (context) => widget),
     );
   }
 }

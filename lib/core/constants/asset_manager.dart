@@ -16,4 +16,5 @@ class AssetManager {
   static const String notification = "assets/images/notification.svg";
   static const String search = "assets/images/search.svg";
   static const String apple = "assets/images/apple.svg";
+  static const String loading = "assets/images/cube.json";
 }
