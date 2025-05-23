@@ -1,6 +1,7 @@
 import 'package:bookia_store/core/constants/app_colors.dart';
 import 'package:bookia_store/core/constants/asset_manager.dart';
 import 'package:bookia_store/core/features/app_pages/home_screen.dart';
+import 'package:bookia_store/core/features/cart/presentation/page/cart_screen.dart';
 import 'package:bookia_store/core/features/wishList/presentation/page/wish_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -17,7 +18,7 @@ class _MainAppScreenState extends State<MainAppScreen> {
   List<Widget> screens = [
     HomeScreen(),
     WishlistScreen(),
-    HomeScreen(),
+    CartScreen(),
     HomeScreen(),
   ];
   @override

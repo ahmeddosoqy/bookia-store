@@ -21,3 +21,25 @@ final class SliderErrorState extends HomeState {
   final String message;
   SliderErrorState(this.message);
 }
+
+final class AddToWishlistState extends HomeState {}
+
+final class WishListLoadingState extends HomeState {}
+
+final class WishListSuccessState extends HomeState {}
+
+final class WishListErrorState extends HomeState {
+  final String message;
+  WishListErrorState(this.message);
+}
+
+final class AddToCartState extends HomeState {}
+
+final class CartLoadingState extends HomeState {}
+
+final class CartSuccessState extends HomeState {}
+
+final class CartErrorState extends HomeState {
+  final String message;
+  CartErrorState(this.message);
+}

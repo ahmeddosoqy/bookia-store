@@ -1,3 +1,5 @@
+import 'package:bookia_store/core/features/cart/data/model/repo/cart_repo.dart';
+import 'package:bookia_store/core/features/wishList/data/model/repo/wish_list_repo.dart';
 import 'package:bookia_store/core/model/get_best_seller_response/get_best_seller_response.dart';
 import 'package:bookia_store/core/model/get_slider_model/get_slider_model.dart';
 import 'package:bookia_store/core/repo/home_repo.dart';
@@ -9,14 +11,18 @@ class HomeCubit extends Cubit<HomeState> {
 
   GetBestSellerResponse? bestSellerResponse;
   GetSliderModel? sliderResponse;
-  // fetchHomeData() async {
-  //   emit(HomeLoadingState());
-  //   var response = Future.value([
-  //     await getBestSeller(),
-  //     await getSlider(),
-  //   ]);
-  //   emit(HomeSuccessState());
-  // }
+
+  Future<void> getSlider() async {
+    emit(SliderLoadingState());
+    await HomeRepo.getSlider().then((value) {
+      if (value != null) {
+        sliderResponse = value;
+        emit(SliderSuccessState());
+      } else {
+        emit(SliderErrorState("something went wrong"));
+      }
+    });
+  }
 
   Future<void> getBestSeller() async {
     emit(BestSellerLoadingState());
@@ -30,14 +36,24 @@ class HomeCubit extends Cubit<HomeState> {
     });
   }
 
-  Future<void> getSlider() async {
-    emit(SliderLoadingState());
-    await HomeRepo.getSlider().then((value) {
-      if (value != null) {
-        sliderResponse = value;
-        emit(SliderSuccessState());
+  Future<void> addToWishlist(int productId) async {
+    emit(CartLoadingState());
+    await WishListRepo.addToWishlist(productId).then((value) {
+      if (value) {
+        emit(CartSuccessState());
       } else {
-        emit(SliderErrorState("something went wrong"));
+        emit(CartErrorState("something went wrong"));
+      }
+    });
+  }
+
+  Future<void> addToCart(int productId) async {
+    emit(CartLoadingState());
+    await CartRepo.addToCart(productId).then((value) {
+      if (value) {
+        emit(CartSuccessState());
+      } else {
+        emit(CartErrorState("something went wrong"));
       }
     });
   }

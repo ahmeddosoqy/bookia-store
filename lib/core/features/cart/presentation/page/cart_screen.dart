@@ -1,24 +1,23 @@
 import 'package:bookia_store/core/constants/asset_manager.dart';
-import 'package:bookia_store/core/features/wishList/presentation/cubit/wish_list_cubit.dart';
+import 'package:bookia_store/core/features/cart/presentation/cubit/cart_cubit.dart';
+import 'package:bookia_store/core/features/cart/presentation/widgets/cart_items.dart';
 import 'package:bookia_store/core/pages/main_app_screen.dart';
-import 'package:bookia_store/core/widgets/dialogs.dart';
-import 'package:bookia_store/core/features/wishList/presentation/widgets/wish_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 
-class WishlistScreen extends StatelessWidget {
-  const WishlistScreen({super.key});
+class CartScreen extends StatelessWidget {
+  const CartScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => WishListCubit()..getWishList(),
+      create: (context) => CartCubit()..getCart(),
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text(
-            'Wishlist',
+            'Cart',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w600,
@@ -38,32 +37,16 @@ class WishlistScreen extends StatelessWidget {
           ),
           backgroundColor: Colors.white,
         ),
-        body: BlocConsumer<WishListCubit, WishListState>(
-          buildWhen:
-              (previous, current) =>
-                  current is WishListSuccessState ||
-                  current is WishListErrorState ||
-                  current is WishListLoadingState,
-          listener: (context, state) {
-            if (state is AddToCartSuccessState) {
-              Navigator.pop(context);
-              showSuccessToast(context, "Added to cart");
-            } else if (state is AddToCartErrorState) {
-              Navigator.pop(context);
-              showErrorToast(context, "Something went wrong");
-            } else if (state is AddToCartLoadingState) {
-              showLoadingDialog(context);
-            }
-          },
+        body: BlocConsumer<CartCubit, CartState>(
+          listener: (context, state) {},
           builder: (context, state) {
-            if (state is WishListSuccessState) {
+            if (state is CartSuccessState) {
               var books =
-                  context.read<WishListCubit>().wishListResponse?.data?.data ??
-                  [];
+                  context.read<CartCubit>().cartResponse?.data?.cartItems ?? [];
               return books.isEmpty
                   ? const Center(
                     child: Text(
-                      'No books in your wishlist',
+                      'No books in your Cart',
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
@@ -80,17 +63,35 @@ class WishlistScreen extends StatelessWidget {
                           child: const Divider(color: Colors.grey, height: 30),
                         ),
                     itemBuilder: (context, index) {
-                      return WishListItem(
+                      return CartItemWidget(
                         book: books[index],
                         onRemove: () {
-                          context.read<WishListCubit>().removeFromWishList(
-                            books[index].id ?? 0,
+                          context.read<CartCubit>().removeFromCart(
+                            books[index].itemId ?? 0,
                           );
                         },
-                        onAddToCart: () {
-                          context.read<WishListCubit>().addToCart(
-                            books[index].id ?? 0,
-                          );
+                        onAddQuantity: () {
+                          if ((books[index].itemQuantity ?? 0) <
+                              (books[index].itemProductStock ?? 0)) {
+                            context.read<CartCubit>().updateCart(
+                              books[index].itemId ?? 0,
+                              (books[index].itemQuantity ?? 0) + 1,
+                            );
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("No more stock available"),
+                              ),
+                            );
+                          }
+                        },
+                        onRemoveQuantity: () {
+                          if ((books[index].itemQuantity ?? 0) > 1) {
+                            context.read<CartCubit>().updateCart(
+                              books[index].itemId ?? 0,
+                              (books[index].itemQuantity ?? 0) - 1,
+                            );
+                          }
                         },
                       );
                     },
